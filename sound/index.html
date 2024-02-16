@@ -1,0 +1,116 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Frequency Sound Player</title>
+    </head>
+    <body>
+        <h1>Frequency Sound Player</h1>
+        <!-- button that decrease the frequency by 100 -->
+        <button onclick="decreaseFrequency(100)">
+            Decrease Frequency by 100
+        </button>
+        <label for="frequency">Enter Frequency (Hz):</label>
+        <input
+            type="number"
+            id="frequency"
+            name="frequency"
+            min="20"
+            max="20000"
+            step="1"
+            value="440"
+            onchange="toggleSound()"
+        />
+
+        <br /><br />
+        <select name="" id="shape" onchange="chanageShape()">
+            <option value="sine">Sine</option>
+            <option value="square">Square</option>
+            <option value="sawtooth">Sawtooth</option>
+            <option value="triangle">Triangle</option>
+        </select>
+        <input
+            type="checkbox"
+            id="soundCheckbox"
+            name="soundCheckbox"
+            onchange="toggleSound()"
+        />
+        <label for="soundCheckbox">Play Sound</label>
+
+        <script>
+            let oscillator = null;
+            let last = null;
+            let shape = "sine";
+            function chanageShape() {
+                const shapeInput = document.getElementById("shape");
+                shape = shapeInput.value;
+                console.log(shape);
+                if (oscillator !== null) {
+                    oscillator.type = shape;
+                    toggleSound();
+                }
+            }
+            function toggleSound() {
+                const checkbox = document.getElementById("soundCheckbox");
+                const frequencyInput = document.getElementById("frequency");
+
+                if (checkbox.checked) {
+                    const frequency = parseInt(frequencyInput.value);
+                    if (!isNaN(frequency)) {
+                        if (last == frequency) return;
+                        stopSound();
+                        playSound(frequency);
+                    } else {
+                        console.error("Please enter a valid frequency!");
+                        checkbox.checked = false;
+                    }
+                } else {
+                    stopSound();
+                }
+            }
+
+            function playSound(frequency) {
+                const audioCtx = new (window.AudioContext ||
+                    window.webkitAudioContext)();
+                oscillator = audioCtx.createOscillator();
+                oscillator.type = shape;
+                oscillator.frequency.setValueAtTime(
+                    frequency,
+                    audioCtx.currentTime
+                );
+                oscillator.connect(audioCtx.destination);
+                oscillator.start();
+            }
+
+            function stopSound() {
+                if (oscillator !== null) {
+                    oscillator.stop();
+                    oscillator = null;
+                }
+            }
+
+            function decreaseFrequency(amount) {
+                const frequencyInput = document.getElementById("frequency");
+                const frequency = parseInt(frequencyInput.value);
+                if (!isNaN(frequency)) {
+                    frequencyInput.value = frequency - amount;
+                    toggleSound();
+                } else {
+                    console.error("Please enter a valid frequency!");
+                }
+            }
+
+            // when up arrow been pressed add 100 and play
+            document.addEventListener("keydown", function (event) {
+                if (event.code === "ArrowUp") {
+                    decreaseFrequency(-1);
+                } else if (event.code === "ArrowDown") {
+                    decreaseFrequency(1);
+                }
+            });
+        </script>
+    </body>
+</html>

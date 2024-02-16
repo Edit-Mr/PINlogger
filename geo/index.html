@@ -1,0 +1,58 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>geo</h1>
+        <button onclick="get()">aaa</button>
+        <script>
+            const get = () => {
+                if (
+                    window.DeviceOrientationEvent !== undefined &&
+                    typeof window.DeviceOrientationEvent.requestPermission ===
+                        "function"
+                ) {
+                    alert("Permission");
+                    window.DeviceOrientationEvent.requestPermission()
+                        .then(function (response) {
+                            if (response == "granted") {
+                                alert("Permission granted");
+                                window.addEventListener(
+                                    "orientationchange",
+                                    onScreenOrientationChangeEvent,
+                                    false
+                                );
+                                window.addEventListener(
+                                    "deviceorientation",
+                                    onDeviceOrientationChangeEvent,
+                                    false
+                                );
+                            }
+                        })
+                        .catch(function (error) {
+                            alert(
+                                "Unable to use DeviceOrientation API:",
+                                error
+                            );
+                        });
+                } else {
+                    window.addEventListener(
+                        "orientationchange",
+                        onScreenOrientationChangeEvent,
+                        false
+                    );
+                    window.addEventListener(
+                        "deviceorientation",
+                        onDeviceOrientationChangeEvent,
+                        false
+                    );
+                }
+            };
+        </script>
+    </body>
+</html>
