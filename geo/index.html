@@ -10,18 +10,18 @@
     <body>
         <h1>geo</h1>
         <button onclick="get()">aaa</button>
+        <p></p>
         <script>
             const get = () => {
+                
                 if (
                     window.DeviceOrientationEvent !== undefined &&
                     typeof window.DeviceOrientationEvent.requestPermission ===
                         "function"
                 ) {
-                    alert("Permission");
                     window.DeviceOrientationEvent.requestPermission()
                         .then(function (response) {
                             if (response == "granted") {
-                                alert("Permission granted");
                                 window.addEventListener(
                                     "orientationchange",
                                     onScreenOrientationChangeEvent,
@@ -35,7 +35,7 @@
                             }
                         })
                         .catch(function (error) {
-                            alert(
+                            console.error(
                                 "Unable to use DeviceOrientation API:",
                                 error
                             );
@@ -52,7 +52,20 @@
                         false
                     );
                 }
+
             };
+                var handleOrientationEvent = function (event) {
+                    // alpha: 围绕垂直手机屏幕的轴转动的旋转角度
+                    var rotateDegrees = event.alpha;
+                    // gamma: 围绕平行充电口的轴转动的旋转角度
+                    var leftToRight = event.gamma;
+                    // beta: 围绕平行音量键的轴转动的旋转角度
+                    var frontToBack = event.beta;
+                    alert("aaa");
+                    document.querySelector(
+                        "p"
+                    ).innerText = `frontToBack: ${frontToBack}, leftToRight: ${leftToRight}, rotateDegrees: ${rotateDegrees}`;
+                };
         </script>
     </body>
 </html>
